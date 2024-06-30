@@ -2,7 +2,7 @@ import User from "../models/user.model";
 import ApiError from "../utils/apiError";
 import ApiResponse from "../utils/apiResponse";
 import asyncHandler from "../utils/asyncHandler";
-import { userRegisterValidation } from "../zod/userValidation.zod";
+import { userLoginValidation, userRegisterValidation } from "../zod/userValidation.zod";
 
 const userRegister = asyncHandler(async (req, res, next) => {
 
@@ -26,5 +26,31 @@ const userRegister = asyncHandler(async (req, res, next) => {
 const userLogin = asyncHandler(async (req, res, next) => {
 
     const {email, password} = req.body
-    if((username == "" || email == "") && password == "")
+    if(email == '' || password == '') throw new ApiError(400, "Please provide every field")
+
+    const isDataValid = userLoginValidation.safeParse(req.body)
+    if(!isDataValid.success) throw new ApiError(401, "Invalid data provided")
+
+    const user = await User.findOne({email})
+    if(!user) throw new ApiError(404, "User does not exist")
+
+    const isPasswordCorrect = await user.isPasswordCorrect(password)
+    if(!isPasswordCorrect) throw new ApiError(400, "Email or password is incorrect")
+
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    user.save({validateBeforeSave: false})
+
+    const existingUser = await User.findById(user._id).select("-password -refreshToken -blacklistToken")
+    if(!existingUser) throw new ApiError(500, "Something went wrong , please try again")
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    res.status(201).cookie("accessToken", accessToken, options).cookie("refreshToken", refreshToken, options).json(new ApiResponse(201, existingUser, "User logged in successfully"))
+
 })
