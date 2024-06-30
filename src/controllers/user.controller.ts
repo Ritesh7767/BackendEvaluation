@@ -4,7 +4,7 @@ import ApiResponse from "../utils/apiResponse";
 import asyncHandler from "../utils/asyncHandler";
 import { userLoginValidation, userRegisterValidation } from "../zod/userValidation.zod";
 
-const userRegister = asyncHandler(async (req, res, next) => {
+export const userRegister = asyncHandler(async (req, res, next) => {
 
     const {username, email, password} = req.body
     if([username, email, password].some(ele => ele.trim() == '')) throw new ApiError(400, "Please provide every field")
@@ -23,7 +23,7 @@ const userRegister = asyncHandler(async (req, res, next) => {
     res.status(201).json(new ApiResponse(201, createdUser))
 })
 
-const userLogin = asyncHandler(async (req, res, next) => {
+export const userLogin = asyncHandler(async (req, res, next) => {
 
     const {email, password} = req.body
     if(email == '' || password == '') throw new ApiError(400, "Please provide every field")
@@ -54,3 +54,4 @@ const userLogin = asyncHandler(async (req, res, next) => {
     res.status(201).cookie("accessToken", accessToken, options).cookie("refreshToken", refreshToken, options).json(new ApiResponse(201, existingUser, "User logged in successfully"))
 
 })
+
