@@ -6,6 +6,8 @@ interface userSchemaInterface {
     username: string,
     email: string,
     password: string,
+    refreshToken: string,
+    blacklistToken: string[],
     isPasswordCorrect: (password: string)=>Promise<string>,
     generateAccessToken: ()=>string,
     generateRefreshToken: ()=>string
@@ -28,7 +30,15 @@ const userSchema = new mongoose.Schema<userSchemaInterface>(
         password: {
             type: String,
             required: true
-        }
+        },
+        refreshToken: {
+            type: String
+        },
+        blacklistToken: [
+            {
+                type: String
+            }
+        ]
     },
     {
         versionKey: false,
