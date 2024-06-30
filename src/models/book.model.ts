@@ -2,10 +2,11 @@ import mongoose from "mongoose"
 
 interface bookInterface {
     title: string,
-    content: string,
     description: string,
+    content: string,
+    status?: boolean
     comments?: string[],
-    owner: mongoose.Schema.Types.ObjectId
+    author: mongoose.Schema.Types.ObjectId
 }
 
 const bookSchema = new mongoose.Schema<bookInterface>(
@@ -16,22 +17,27 @@ const bookSchema = new mongoose.Schema<bookInterface>(
             unique: true,
             trim: true
         },
+        description: {
+            type: String,
+            required: true
+        },
         content: {
             type: String,
             required: true,
         },
-        description: {
-            type: String,
-            required: true
+        status: {
+            type: Boolean,
+            default: false
         },
         comments: [
             {
                 type: String
             }
         ],
-        owner: {
+        author: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'User',
+            required: true
         }
     }
 )
