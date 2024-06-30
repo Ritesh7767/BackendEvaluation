@@ -5,7 +5,7 @@ interface bookInterface {
     description: string,
     content: string,
     status?: boolean
-    comments?: string[],
+    comments: mongoose.Schema.Types.ObjectId[],
     author: mongoose.Schema.Types.ObjectId
 }
 
@@ -31,7 +31,8 @@ const bookSchema = new mongoose.Schema<bookInterface>(
         },
         comments: [
             {
-                type: String
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Comment"
             }
         ],
         author: {

@@ -31,7 +31,7 @@ export const getBooks = asyncHandler(async (req, res, next) => {
     res.status(200).json(new ApiResponse(200, books))
 })
 
-export const updateBooks = asyncHandler(async (req, res, next) => {
+export const updateBook = asyncHandler(async (req, res, next) => {
 
     const _id = req.query._id
 
@@ -41,10 +41,10 @@ export const updateBooks = asyncHandler(async (req, res, next) => {
     const updatedBook = await Book.findByIdAndUpdate({_id, $set: {content}})
     if(!updatedBook) throw new ApiError(400, "Book does not exist")
 
-    res.status(201).json(new ApiResponse(201, updateBooks, "Book updated successfully"))
+    res.status(201).json(new ApiResponse(201, updatedBook, "Book updated successfully"))
 })
 
-export const deleteBooks = asyncHandler(async (req, res, next) => {
+export const deleteBook = asyncHandler(async (req, res, next) => {
 
     const _id = req.query._id
     const deletedBook = await Book.findById(_id)

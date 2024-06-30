@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 interface favouriteBookInterface {
     user: mongoose.Schema.Types.ObjectId,
-    favouriteBooks: mongoose.Schema.Types.ObjectId[]
+    favouriteBooks: string[]
 }
 
 const favouriteBookSchema = new mongoose.Schema<favouriteBookInterface>(
@@ -13,8 +13,7 @@ const favouriteBookSchema = new mongoose.Schema<favouriteBookInterface>(
         },
         favouriteBooks: [
             {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Book"
+                type: String,
             }
         ]
     }
